@@ -1,6 +1,9 @@
 import logging
+from json import load
 from os.path import isdir
 from time import time
+
+import pandas as pd
 
 if __name__ == '__main__':
     start_time = time()
@@ -27,6 +30,24 @@ if __name__ == '__main__':
     if not input_folder_exists:
         logger.warning('input folder %s does not exist. Quitting.' % input_folder)
         quit()
+
+    with open('./settings.json') as settings_fp:
+        settings = load(settings_fp)
+        logger.debug(settings)
+
+    input_files = None
+    key = 'input_files'
+    if key in settings.keys():
+        input_files = settings[key]
+    else:
+        logger.warning('required key %s is not in the settings. Quitting.' % key)
+        quit()
+    for item in input_files:
+        input_file = input_folder + item
+        logger.debug('loading data from %s' % input_file)
+        data = pd.read_csv(input_file)
+        logger.debug(data.shape)
+        logger.debug(data.columns.values)
 
     logger.debug('done')
     finish_time = time()

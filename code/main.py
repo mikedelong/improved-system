@@ -35,19 +35,22 @@ if __name__ == '__main__':
         settings = load(settings_fp)
         logger.debug(settings)
 
+    data_frames = dict()
     input_files = None
-    key = 'input_files'
+    key = 'all_input_files'
     if key in settings.keys():
         input_files = settings[key]
     else:
         logger.warning('required key %s is not in the settings. Quitting.' % key)
         quit()
     for item in input_files:
+        short_item = item.replace('.txt', '')
         input_file = input_folder + item
         logger.debug('loading data from %s' % input_file)
         data = pd.read_csv(input_file)
         logger.debug(data.shape)
         logger.debug(data.columns.values)
+        data_frames[short_item] = data
 
     logger.debug('done')
     finish_time = time()
